@@ -17,6 +17,8 @@ uint8_t dirPin2 = 7;
 uint8_t enablePin = 6;
 DCMOTOR Motor(pwmPin, dirPin1, dirPin2, enablePin);
 int16_t hatYInput;
+int16_t intensity;
+bool motorDir;
 
 uint8_t xboxPort = 0;//The port on the receiver that the controller is connected to
 
@@ -33,8 +35,20 @@ void setup() {//The setup code initializes the rest of your program
 void loop() {// The loop runs repeatedly from top to bottom after the setup
   Usb.Task();
   if(Xbox.XboxReceiverConnected)  {
-    if(Xbox.Xbox360Connected(xboxPort)){
-      hatYInput = Xbox.getAnalogHat(LefthatY, xboxPort);
+    if(Xbox.Xbox360Connected[xboxPort]){
+      hatYInput = Xbox.getAnalogHat(LeftHatY, xboxPort);
+      intensity = abs(hatYInput);
+      if(hatYInput > 0){
+        motorRunCCW(pwmMap(intensity));
+      } else if (hatYInput < 0 ){
+        motorRunCW(pwmMap(intensity));
+      } else {
+        motorBrake();
+      }
     }
   }
+}
+
+uint8_t pwmMap(uint16_t input){
+  return input/128;
 }

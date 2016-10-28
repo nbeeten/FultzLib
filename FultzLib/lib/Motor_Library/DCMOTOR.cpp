@@ -1,6 +1,8 @@
 #include "DCMOTOR.h"
 
-	DCMOTOR::DCMOTOR(uint8_t pwmPin, uint8_t dirPin1, uint8_t dirPin2, uint8_t enablePin){
+
+	DCMOTOR::DCMOTOR () {}
+	void DCMOTOR::attach(uint8_t pwmPin, uint8_t dirPin1, uint8_t dirPin2, uint8_t enablePin){
 		this->pwmPin = pwmPin;
 		this->dirPin1 = dirPin1;
 		this->dirPin2 = dirPin2;
@@ -10,27 +12,18 @@
 		pinMode(dirPin2, OUTPUT);
 		pinMode(enablePin, OUTPUT);
 	}
-	DCMOTOR::DCMOTOR () { //default configuration
-		this->pwmPin = 4;
-		this->dirPin1 = 6;
-		this->dirPin2 = 5;
-		this->enablePin = 3;
-		pinMode(pwmPin, OUTPUT);
-		pinMode(dirPin1, OUTPUT);
-		pinMode(dirPin2, OUTPUT);
-		pinMode(enablePin, OUTPUT);
-	}
-
 
 	void DCMOTOR::motorEnable(void) {
-		enableState_n = false;
-		digitalWrite(enablePin, enableState_n);
+
+		digitalWrite(enablePin, enableState);
+		enableState = false;
 		return;
 	}
 
 	void DCMOTOR::motorDisable(void) {
-		enableState_n = true;
-		digitalWrite(enablePin, enableState_n);
+
+		digitalWrite(enablePin, enableState);
+		enableState = true;
 		return;
 	}
 
