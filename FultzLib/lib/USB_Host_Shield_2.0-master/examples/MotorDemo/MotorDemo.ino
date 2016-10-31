@@ -15,10 +15,12 @@ uint8_t pwmPin = 9;
 uint8_t dirPin1 = 8;
 uint8_t dirPin2 = 7;
 uint8_t enablePin = 6;
-DCMOTOR Motor(pwmPin, dirPin1, dirPin2, enablePin);
+DCMOTOR Motor;
 int16_t hatYInput;
 int16_t intensity;
 bool motorDir;
+
+uint8_t pwmMap(uint16_t input);
 
 uint8_t xboxPort = 0;//The port on the receiver that the controller is connected to
 
@@ -28,6 +30,7 @@ void setup() {//The setup code initializes the rest of your program
     Serial.print(F("\r\nOSC did not start"));
     while (1); //Stop the program if we didn't connect
   }
+  Motor.attach(pwmPin, dirPin1, dirPin2, enablePin);
   Motor.motorEnable();
   Serial.print(F("\r\nXbox Wireless Receiver Library Started"));
 }
@@ -38,17 +41,26 @@ void loop() {// The loop runs repeatedly from top to bottom after the setup
     if(Xbox.Xbox360Connected[xboxPort]){
       hatYInput = Xbox.getAnalogHat(LeftHatY, xboxPort);
       intensity = abs(hatYInput);
-      if(hatYInput > 0){
-        motorRunCCW(pwmMap(intensity));
-      } else if (hatYInput < 0 ){
-        motorRunCW(pwmMap(intensity));
+      if (hatYInput > 7500 || hatYInput < -7500) {
+        Serial.print("LeftHatY: ");
+        Serial.println(hatYInput);
+      }
+      if(hatYInput > 7500){
+        Motor.motorRunCCW(pwmMap(intensity));
+      } else if (hatYInput < -7500 ){
+        Motor.motorRunCW(pwmMap(intensity));
       } else {
-        motorBrake();
+        Motor.motorBrake();
       }
     }
   }
 }
 
 uint8_t pwmMap(uint16_t input){
-  return input/128;
+  uint8_t temp = (input-1)/128;//overflows at full neg without the -1
+  Serial.print("Intensity: ");
+  Serial.println(input);
+  Serial.print("Pwm Out: ");
+  Serial.println(temp);
+  return temp;
 }

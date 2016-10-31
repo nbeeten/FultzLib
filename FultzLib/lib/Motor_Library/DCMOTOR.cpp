@@ -14,22 +14,20 @@
 	}
 
 	void DCMOTOR::motorEnable(void) {
-
+		enableState = true;
 		digitalWrite(enablePin, enableState);
-		enableState = false;
 		return;
 	}
 
 	void DCMOTOR::motorDisable(void) {
-
+		enableState = false;
 		digitalWrite(enablePin, enableState);
-		enableState = true;
 		return;
 	}
 
 	void DCMOTOR::motorBrake(void){
-		dir1State = true;
-		dir2State = true;
+		dir1State = false;
+		dir2State = false;
 		digitalWrite(dirPin1, dir1State);
 		digitalWrite(dirPin2, dir2State);
 		return;

@@ -41,14 +41,13 @@ void loop() {// The loop runs repeatedly from top to bottom after the setup
     if(Xbox.Xbox360Connected[xboxPort]){
       hatYInput = Xbox.getAnalogHat(LeftHatY, xboxPort);
       intensity = abs(hatYInput);
-      if (Xbox.getAnalogHat(LeftHatY, xboxPort) > 7500 || Xbox.getAnalogHat(LeftHatY, xboxPort) < -7500) {
-        Serial.print(F("LeftHatY: "));
-        Serial.print(Xbox.getAnalogHat(LeftHatY, xboxPort));
-        Serial.print("\n");
+      if (hatYInput > 7500 || hatYInput < -7500) {
+        Serial.print("LeftHatY: ");
+        Serial.println(hatYInput);
       }
-      if(hatYInput > 0){
+      if(hatYInput > 7500){
         Motor.motorRunCCW(pwmMap(intensity));
-      } else if (hatYInput < 0 ){
+      } else if (hatYInput < -7500 ){
         Motor.motorRunCW(pwmMap(intensity));
       } else {
         Motor.motorBrake();
@@ -58,5 +57,10 @@ void loop() {// The loop runs repeatedly from top to bottom after the setup
 }
 
 uint8_t pwmMap(uint16_t input){
-  return input/128;
+  uint8_t temp = (input-1)/128;//overflows at full neg without the -1
+  Serial.print("Intensity: ");
+  Serial.println(input);
+  Serial.print("Pwm Out: ");
+  Serial.println(temp);
+  return temp;
 }
