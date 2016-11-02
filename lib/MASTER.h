@@ -3,5 +3,6 @@
 
   #include <DCMOTOR.h>
   #include <XBOXRECV.h>
-
+  #include <NewPing.h>
+  
 #endif
